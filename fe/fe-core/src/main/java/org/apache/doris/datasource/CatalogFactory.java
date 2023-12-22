@@ -133,6 +133,7 @@ public class CatalogFactory {
                 break;
             case "lakesoul":
                 catalog = new LakeSoulExternalCatalog(catalogId, name, resource, props, comment);
+                break;
             case "test":
                 if (!FeConstants.runningUnitTest) {
                     throw new DdlException("test catalog is only for FE unit test");
@@ -158,4 +159,5 @@ public class CatalogFactory {
         return catalog;
     }
 }
+
 

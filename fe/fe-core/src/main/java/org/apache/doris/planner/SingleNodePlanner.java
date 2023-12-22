@@ -1949,6 +1949,7 @@ public class SingleNodePlanner {
                 break;
             case LAKESOUl_EXTERNAL_TABLE:
                 scanNode = new LakeSoulScanNode(ctx.getNextNodeId(), tblRef.getDesc(), true);
+                break;
             case TEST_EXTERNAL_TABLE:
                 scanNode = new TestExternalTableScanNode(ctx.getNextNodeId(), tblRef.getDesc());
                 break;
@@ -2848,3 +2849,4 @@ public class SingleNodePlanner {
         return result;
     }
 }
+

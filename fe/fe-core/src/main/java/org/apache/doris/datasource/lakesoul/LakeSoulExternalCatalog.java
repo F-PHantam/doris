@@ -17,13 +17,14 @@
 
 package org.apache.doris.datasource.lakesoul;
 
-import com.dmetasoul.lakesoul.meta.DBManager;
-import com.dmetasoul.lakesoul.meta.entity.TableInfo;
 import org.apache.doris.datasource.CatalogProperty;
 import org.apache.doris.datasource.ExternalCatalog;
 import org.apache.doris.datasource.InitCatalogLog;
 import org.apache.doris.datasource.SessionContext;
 import org.apache.doris.datasource.property.PropertyConverter;
+
+import com.dmetasoul.lakesoul.meta.DBManager;
+import com.dmetasoul.lakesoul.meta.entity.TableInfo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -38,12 +39,13 @@ public class LakeSoulExternalCatalog extends ExternalCatalog {
     private final DBManager dbManager;
 
     public LakeSoulExternalCatalog(long catalogId, String name, String resource, Map<String, String> props,
-                                   String comment) {
+            String comment) {
         super(catalogId, name, InitCatalogLog.Type.LAKESOUL, comment);
         props = PropertyConverter.convertToMetaProperties(props);
         dbManager = new DBManager();
         catalogProperty = new CatalogProperty(resource, props);
     }
+
     @Override
     protected List<String> listDatabaseNames() {
         return dbManager.listNamespaces();
@@ -54,9 +56,9 @@ public class LakeSoulExternalCatalog extends ExternalCatalog {
         List<TableInfo> tifs = dbManager.getTableInfosByNamespace(getRealTableName(dbName));
         List<String> tableNames = new ArrayList<>(100);
         for (TableInfo item : tifs) {
-//            if (FlinkUtil.isTable(item)) {
-                tableNames.add(item.getTableName());
-//            }
+            //            if (FlinkUtil.isTable(item)) {
+            tableNames.add(item.getTableName());
+            //            }
         }
         return tableNames;
     }
@@ -64,7 +66,7 @@ public class LakeSoulExternalCatalog extends ExternalCatalog {
     @Override
     public boolean tableExist(SessionContext ctx, String dbName, String tblName) {
         TableInfo tableInfo =
-            dbManager.getTableInfoByNameAndNamespace(getRealTableName(dbName), tblName);
+                dbManager.getTableInfoByNameAndNamespace(getRealTableName(dbName), tblName);
 
         return null != tableInfo;
     }
@@ -79,3 +81,4 @@ public class LakeSoulExternalCatalog extends ExternalCatalog {
         return dbManager.getTableInfoByNameAndNamespace(dbName, tblName);
     }
 }
+

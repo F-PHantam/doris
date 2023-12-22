@@ -17,11 +17,6 @@
 
 package org.apache.doris.planner.external.lakesoul;
 
-import com.dmetasoul.lakesoul.meta.DBUtil;
-import com.dmetasoul.lakesoul.meta.DataFileInfo;
-import com.dmetasoul.lakesoul.meta.DataOperation;
-import com.dmetasoul.lakesoul.meta.entity.TableInfo;
-import lombok.Setter;
 import org.apache.doris.analysis.TupleDescriptor;
 import org.apache.doris.catalog.PartitionItem;
 import org.apache.doris.catalog.PartitionKey;
@@ -39,10 +34,16 @@ import org.apache.doris.thrift.TFileRangeDesc;
 import org.apache.doris.thrift.TFileType;
 import org.apache.doris.thrift.TLakeSoulFileDesc;
 import org.apache.doris.thrift.TTableFormatFileDesc;
+
+import com.dmetasoul.lakesoul.meta.DBUtil;
+import com.dmetasoul.lakesoul.meta.DataFileInfo;
+import com.dmetasoul.lakesoul.meta.DataOperation;
+import com.dmetasoul.lakesoul.meta.entity.TableInfo;
+import lombok.Setter;
 import org.apache.hadoop.fs.Path;
 
-import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -55,6 +56,7 @@ public class LakeSoulScanNode extends FileQueryScanNode {
 
     @Setter
     private LogicalFileScan.SelectedPartitions selectedPartitions = null;
+
     /**
      * External file scan node for Query lakesoul table
      * needCheckColumnPriv: Some of ExternalFileScanNode do not need to check column priv
@@ -80,7 +82,7 @@ public class LakeSoulScanNode extends FileQueryScanNode {
     @Override
     protected TFileType getLocationType(String location) throws UserException {
         return getTFileType(location).orElseThrow(() ->
-            new DdlException("Unknown file location " + location + " for iceberg table " + table.getTableName()));
+                new DdlException("Unknown file location " + location + " for iceberg table " + table.getTableName()));
     }
 
     @Override
@@ -108,9 +110,9 @@ public class LakeSoulScanNode extends FileQueryScanNode {
         tableFormatFileDesc.setTableFormatType(lakeSoulSplit.getTableFormatType().value());
         TLakeSoulFileDesc fileDesc = new TLakeSoulFileDesc();
         fileDesc.setBasePath(lakeSoulSplit.getPath().toString());
-        fileDesc.setDataFileLength(lakeSoulSplit.getFileLength());
+        //fileDesc.setDataFileLength(lakeSoulSplit.getFileLength());
         fileDesc.setColumnNames(lakeSoulSplit.getLakeSoulColumnNames());
-//        fileDesc.setTableSchema(lakeSoulSplit.getTableSchema());
+        fileDesc.setTableSchema(lakeSoulSplit.getTableSchema());
         tableFormatFileDesc.setLakesoulParams(fileDesc);
         rangeDesc.setTableFormatParams(tableFormatFileDesc);
     }
@@ -121,15 +123,14 @@ public class LakeSoulScanNode extends FileQueryScanNode {
         if (tablePartitions.size() > 0) {
             boolean isPartitionPruned = selectedPartitions == null ? false : selectedPartitions.isPruned;
             if (!isPartitionPruned) {
-
+                System.out.println("aaa");
             } else {
                 this.totalPartitionNum = selectedPartitions.totalPartitionNum;
                 Collection<PartitionItem> partitionItems = selectedPartitions.selectedPartitions.values();
                 for (PartitionItem item : partitionItems) {
                     List<PartitionKey> items = item.getItems();
                     for (PartitionKey p : items) {
-                        List<String> partitionValuesAsStringList = p.getPartitionValuesAsStringList();
-
+                        System.out.println(p.toString());
                     }
                 }
 
@@ -139,9 +140,9 @@ public class LakeSoulScanNode extends FileQueryScanNode {
             for (DataFileInfo dataFileInfo : tableDataInfo) {
                 String filePath = dataFileInfo.path();
                 long fileSize = dataFileInfo.size();
-//                List<String> partitionValues = getPathPartitionKeys();
+                //                List<String> partitionValues = getPathPartitionKeys();
                 LakeSoulSplit lakeSoulSplit = new LakeSoulSplit(new Path(filePath), 0, fileSize, fileSize,
-                    new String[0], null);
+                        new String[0], null);
                 lakeSoulSplit.setTableSchema(table.getTableSchema());
                 lakeSoulSplit.setLakeSoulColumnNames(Arrays.asList(dataFileInfo.file_exist_cols().split(",")));
                 splits.add(lakeSoulSplit);
@@ -151,3 +152,4 @@ public class LakeSoulScanNode extends FileQueryScanNode {
         return splits;
     }
 }
+

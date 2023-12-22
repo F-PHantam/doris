@@ -17,8 +17,9 @@
 
 package org.apache.doris.planner.external.lakesoul;
 
-import lombok.Data;
 import org.apache.doris.planner.external.FileSplit;
+
+import lombok.Data;
 import org.apache.hadoop.fs.Path;
 
 import java.util.List;
@@ -26,10 +27,12 @@ import java.util.List;
 @Data
 public class LakeSoulSplit extends FileSplit {
 
-    public LakeSoulSplit(Path path, long start, long length, long fileLength, String[] hosts, List<String> partitionValues) {
+    public LakeSoulSplit(Path path, long start, long length, long fileLength, String[] hosts,
+            List<String> partitionValues) {
         super(path, start, length, fileLength, hosts, partitionValues);
     }
 
     private List<String> lakeSoulColumnNames;
     private String tableSchema;
 }
+
