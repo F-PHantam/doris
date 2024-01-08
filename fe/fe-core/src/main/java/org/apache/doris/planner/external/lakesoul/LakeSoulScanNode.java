@@ -110,9 +110,8 @@ public class LakeSoulScanNode extends FileQueryScanNode {
         tableFormatFileDesc.setTableFormatType(lakeSoulSplit.getTableFormatType().value());
         TLakeSoulFileDesc fileDesc = new TLakeSoulFileDesc();
         fileDesc.setBasePath(lakeSoulSplit.getPath().toString());
-        //fileDesc.setDataFileLength(lakeSoulSplit.getFileLength());
         fileDesc.setColumnNames(lakeSoulSplit.getLakeSoulColumnNames());
-        fileDesc.setTableSchema(lakeSoulSplit.getTableSchema());
+       fileDesc.setTableSchema(lakeSoulSplit.getTableSchema());
         tableFormatFileDesc.setLakesoulParams(fileDesc);
         rangeDesc.setTableFormatParams(tableFormatFileDesc);
     }

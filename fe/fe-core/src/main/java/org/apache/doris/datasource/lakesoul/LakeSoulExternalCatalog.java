@@ -53,6 +53,7 @@ public class LakeSoulExternalCatalog extends ExternalCatalog {
 
     @Override
     public List<String> listTableNames(SessionContext ctx, String dbName) {
+        makeSureInitialized();
         List<TableInfo> tifs = dbManager.getTableInfosByNamespace(getRealTableName(dbName));
         List<String> tableNames = new ArrayList<>(100);
         for (TableInfo item : tifs) {
