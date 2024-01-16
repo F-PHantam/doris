@@ -79,7 +79,7 @@ public class LakeSoulExternalCatalog extends ExternalCatalog {
 
     public TableInfo getLakeSoulTable(String dbName, String tblName) {
         makeSureInitialized();
-        return dbManager.getTableInfoByNameAndNamespace(dbName, tblName);
+        return dbManager.getTableInfoByNameAndNamespace(tblName, dbName);
     }
 }
 
